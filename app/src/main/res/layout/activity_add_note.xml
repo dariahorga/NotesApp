@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     android:padding="16dp"
-    tools:context=".AddNoteActivity"
-    >
+    tools:context=".AddNoteActivity">
 
     <TextView
         android:id="@+id/addNoteHeading"
@@ -38,19 +38,30 @@
         android:padding="20dp"
         android:background="@drawable/purple_border"
         android:layout_marginTop="16dp"
+        android:textColor="@color/purple"
         android:maxLines="2"
         />
+
+    <Spinner
+        android:id="@+id/folderSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleEditText"
+        android:textColor="@color/purple"
+        android:layout_marginTop="16dp"
+        />
+
     <EditText
         android:id="@+id/contentEditText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/titleEditText"
+        android:layout_below="@id/folderSpinner"
         android:layout_marginTop="16dp"
         android:background="@drawable/purple_border"
         android:hint="Add Content"
+        android:textColor="@color/purple"
         android:gravity="top"
         android:padding="20dp"
         />
-
 
 </RelativeLayout>

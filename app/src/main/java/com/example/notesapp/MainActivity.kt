@@ -27,8 +27,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        enableEdgeToEdge()
-
         db = NotesDatabaseHelper(this)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -42,7 +40,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
 
-        notesAdapter = NotesAdapter(db.getAllNotes(), this)
+        val notes = db.getAllNotes()
+        val folders = db.getAllFolders().associateBy({ it.id }, { it.name })
+        notesAdapter = NotesAdapter(notes, folders, this)
         binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.notesRecyclerView.adapter = notesAdapter
 
@@ -50,6 +50,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val intent = Intent(this, AddNoteActivity::class.java)
             startActivity(intent)
         }
+
+        setupEdgeToEdge()
     }
 
     override fun onResume() {
@@ -61,6 +63,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.nav_about -> Toast.makeText(this, "Hello. This is Daria && Oana && Mara && Teodora", Toast.LENGTH_SHORT).show()
             R.id.nav_logout -> Toast.makeText(this, "Logout!", Toast.LENGTH_SHORT).show()
+            R.id.nav_create_folder -> {
+                val intent = Intent(this, AddFolderActivity::class.java)
+                startActivity(intent)
+            }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
@@ -74,7 +80,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun enableEdgeToEdge() {
+    private fun setupEdgeToEdge() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             binding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)

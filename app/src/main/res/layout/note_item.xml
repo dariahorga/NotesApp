@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true">
@@ -12,12 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@color/white"
         android:padding="16dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/white"
             android:layout_marginTop="8dp">
 
             <TextView
@@ -29,6 +32,18 @@
                 android:textColor="@color/purple"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/folderTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titleTextView"
+                android:fontFamily="@font/poppins"
+                android:text="Folder"
+                android:textColor="@color/purple"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,8 +78,6 @@
             android:fontFamily="@font/poppins"
             android:maxLines="3"
             android:layout_marginTop="4dp" />
-
-
 
     </LinearLayout>
 
