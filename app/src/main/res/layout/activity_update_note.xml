@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".UpdateNoteActivity"
-    >
+    tools:context=".UpdateNoteActivity">
 
     <TextView
         android:id="@+id/editNoteHeading"
@@ -40,17 +40,26 @@
         android:layout_marginTop="16dp"
         android:maxLines="2"
         />
+
+    <!-- Add folder selection Spinner -->
+    <Spinner
+        android:id="@+id/folderSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/updateTitleEditText"
+        android:layout_marginTop="16dp"
+        />
+
     <EditText
         android:id="@+id/updateContentEditText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/updateTitleEditText"
+        android:layout_below="@id/folderSpinner"
         android:layout_marginTop="16dp"
         android:background="@drawable/purple_border"
         android:hint="Add Content"
         android:gravity="top"
         android:padding="20dp"
         />
-
 
 </RelativeLayout>

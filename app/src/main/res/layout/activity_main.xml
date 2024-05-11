@@ -6,6 +6,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
     tools:context=".MainActivity">
@@ -19,19 +20,21 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:id="@+id/toolbar"
-            android:elevation="4dp"
-            android:background="@color/purple" />
+            android:elevation="2dp"
+            android:background="@color/purple"
+            android:layout_marginTop="32dp" />
 
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="2dp"
+            android:layout_weight="1">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/notesRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="16dp" />
+                android:padding="30dp" />
         </FrameLayout>
 
     </LinearLayout>

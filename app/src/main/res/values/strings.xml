@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Your App Name</string>
+    <string name="app_name">Notes</string>
     <string name="open_nav">Open Navigation Drawer</string>
     <string name="close_nav">Close Navigation Drawer</string>
     <string name="about_us_content">Your About Us content goes here...</string>
