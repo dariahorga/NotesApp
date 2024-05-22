@@ -41,6 +41,11 @@ class ShowTasksActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.backButton.setOnClickListener{
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+
         setupEdgeToEdge()
     }
 
