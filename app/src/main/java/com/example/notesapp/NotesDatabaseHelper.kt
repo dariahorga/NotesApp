@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper
 class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         private const val DATABASE_NAME = "notesapp.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
 
         private const val TABLE_NOTES = "notes"
         private const val COLUMN_NOTE_ID = "id"
