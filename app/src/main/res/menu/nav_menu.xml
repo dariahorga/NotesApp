@@ -12,7 +12,12 @@
             android:id="@+id/nav_about"
             android:icon="@drawable/baseline_info_24"
             android:title="About Us"/>
+        <item
+            android:id="@+id/nav_google_sign_in"
+            android:icon="@drawable/ic_google_icon"
+        android:title="Sign in with Google"/>
     </group>
+
 
     <item android:title="">
         <menu>
