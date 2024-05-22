@@ -12,10 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="26dp"
+        android:layout_marginLeft="26dp"
+        android:padding="2dp"
         android:text="Add Folder"
         android:textColor="@color/purple"
-        android:textSize="24sp"
-        android:padding="2dp"/>
+        android:textSize="24sp" />
 
     <ImageView
         android:id="@+id/addFolderButton"
@@ -24,18 +25,20 @@
         android:src="@drawable/baseline_done_24"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@id/addFolderHeading"
-        android:layout_marginEnd="6dp"/>
+        android:layout_marginEnd="15dp"/>
 
     <EditText
         android:id="@+id/folderNameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:hint="Enter folder name"
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/addFolderHeading"
-        android:padding="20dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/purple_border"
-        android:layout_marginTop="16dp"
+        android:hint="Enter folder name"
+        android:inputType="text"
         android:maxLines="1"
-        android:inputType="text"/>
+        android:padding="20dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 
 </RelativeLayout>
