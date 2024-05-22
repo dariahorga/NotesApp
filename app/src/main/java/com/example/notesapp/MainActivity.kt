@@ -67,6 +67,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(intent)
         }
 
+        binding.showTasksButton.setOnClickListener{
+            val intent = Intent(this, ShowTasksActivity::class.java)
+            startActivity(intent)
+        }
+
         setupEdgeToEdge()
         checkSignInState()
     }
