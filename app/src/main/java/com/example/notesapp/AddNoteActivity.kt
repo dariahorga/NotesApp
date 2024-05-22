@@ -1,5 +1,6 @@
 package com.example.notesapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -26,7 +27,6 @@ class AddNoteActivity : AppCompatActivity() {
             val content = binding.contentEditText.text.toString()
             val selectedFolderName = binding.folderSpinner.selectedItem.toString()
             val selectedFolderId = db.getFolderIdByName(selectedFolderName)
-
             if (title.isNotBlank()) {
                 val note = Note(0, title, content, selectedFolderId)
                 db.insertNote(note)

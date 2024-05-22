@@ -26,6 +26,8 @@ class UpdateNoteActivity : AppCompatActivity() {
         }
 
         val note = db.getNoteById(noteId)
+
+
         binding.updateTitleEditText.setText(note?.title ?: "")
         binding.updateContentEditText.setText(note?.content ?: "")
 
@@ -36,6 +38,7 @@ class UpdateNoteActivity : AppCompatActivity() {
             val newContent = binding.updateContentEditText.text.toString()
             val selectedFolderName = binding.folderSpinner.selectedItem.toString()
             val selectedFolderId = db.getFolderIdByName(selectedFolderName)
+
 
             if (note != null) {
                 val updatedNote = Note(note.id, newTitle, newContent, selectedFolderId)
