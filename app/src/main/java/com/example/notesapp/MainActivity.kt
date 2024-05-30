@@ -90,6 +90,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_about -> Toast.makeText(this, "About Us", Toast.LENGTH_SHORT).show()
+            R.id.nav_create_folder -> {
+                val intent = Intent(this, AddFolderActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.nav_show_tasks -> {
+                val intent = Intent(this, ShowTasksActivity::class.java)
+                startActivity(intent)
+            }
             R.id.nav_google_sign_in -> {
 
                 val account = GoogleSignIn.getLastSignedInAccount(this)
@@ -104,6 +112,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
+
 
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
