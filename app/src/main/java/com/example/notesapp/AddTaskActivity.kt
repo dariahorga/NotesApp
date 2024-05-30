@@ -25,22 +25,32 @@ class AddTaskActivity : AppCompatActivity() {
 
         db = NotesDatabaseHelper(this)
 
-        calendarView = findViewById(R.id.calendarView)
-
         var date : String = ""
 
-        calendarView.setOnDateChangeListener(
+        binding.calendarView.setOnDateChangeListener(
             OnDateChangeListener { view, year, month, dayOfMonth ->
                 date = (dayOfMonth.toString()+"-"+(month+1)+"-"+year)
             }
         )
 
-        binding.saveButton.setOnClickListener{
-
+        binding.saveButton.setOnClickListener {
             val content = binding.contentEditText.text.toString()
-            val task = Task(0, content, date, 0)
-            db.insertTask(task)
-            finish()
+            if (content.isEmpty()) {
+                Toast.makeText(this, "Content cannot be empty", Toast.LENGTH_SHORT).show()
+            }
+            else
+            {
+                if(date.isEmpty())
+                {
+                    Toast.makeText(this, "Select a deadline", Toast.LENGTH_SHORT).show()
+                }
+                else
+                {
+                    val task = Task(0, content, date, 0)
+                    db.insertTask(task)
+                    finish()
+                }
+            }
         }
     }
 }

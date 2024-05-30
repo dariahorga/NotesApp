@@ -15,8 +15,13 @@
         <activity
             android:name=".AddTaskActivity"
             android:exported="false" />
+        <activity android:name=".UpdateTaskActivity"
+            />
         <activity
-            android:name=".ShowTasksActivity"/>
+            android:name=".ShowTasksActivity"
+            android:label="Show Tasks"
+            android:exported="true"/>
+
         <activity
             android:name=".UpdateNoteActivity"
             android:exported="false" />
