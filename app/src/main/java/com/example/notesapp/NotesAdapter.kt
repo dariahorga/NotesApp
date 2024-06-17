@@ -18,6 +18,7 @@ class NotesAdapter(private var notes: List<Note>, private val folders: Map<Int, 
         val folderTextView: TextView = itemView.findViewById(R.id.folderTextView)
         val updateButton: ImageView = itemView.findViewById(R.id.updateButton)
         val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
+        val sendButton: ImageView = itemView.findViewById(R.id.sendButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
@@ -45,6 +46,13 @@ class NotesAdapter(private var notes: List<Note>, private val folders: Map<Int, 
             db.deleteNote(note.id)
             refreshData(db.getAllNotes())
             Toast.makeText(holder.itemView.context, "Note Deleted", Toast.LENGTH_SHORT).show()
+        }
+
+        holder.sendButton.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, SendEmailActivity::class.java)
+            intent.putExtra("noteId", notes[position].id)  // Optionally pass the note ID or other data
+            context.startActivity(intent)
         }
     }
 
