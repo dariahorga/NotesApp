@@ -21,7 +21,13 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import android.util.Log
-
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
+//ceva nou...
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
@@ -48,7 +54,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
 
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("910542981394-is2203683tvg308k6q3k9sr8pvnolt8f.apps.googleusercontent.com")
             .requestEmail()
@@ -67,11 +72,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(intent)
         }
 
-        binding.showTasksButton.setOnClickListener{
-            val intent = Intent(this, ShowTasksActivity::class.java)
-            startActivity(intent)
-        }
-
         setupEdgeToEdge()
         checkSignInState()
     }
@@ -83,8 +83,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun checkSignInState() {
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-        updateUI(account)
+        val user = FirebaseAuth.getInstance().currentUser
+        updateUI(user)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -134,26 +134,68 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            updateUI(account)
+            firebaseAuthWithGoogle(account)
             Toast.makeText(this, "Logged in successfully!", Toast.LENGTH_SHORT).show()
         } catch (e: ApiException) {
-            Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show()
+            Log.w("SignInActivity", "signInResult:failed code=" + e.statusCode)
             updateUI(null)
         }
     }
 
-    private fun updateUI(account: GoogleSignInAccount?) {
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Firebase sign in success, now you can get the Firebase User
+                    val user = FirebaseAuth.getInstance().currentUser
+                    updateUserInFirestore(user)
+                    updateUI(user)  // Update UI with the Firebase user
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w("MainActivity", "Firebase authentication failed", task.exception)
+                    updateUI(null)
+                }
+            }
+    }
+
+    private fun updateUserInFirestore(user: FirebaseUser?) {
+        user?.let {
+            val userData = hashMapOf(
+                "email" to user.email,
+                "first_name" to user.displayName?.split(" ")?.get(0),  // Assuming the name is splitable
+                "last_name" to user.displayName?.split(" ")?.get(1)    // Assuming the name is splitable
+            )
+
+            FirebaseFirestore.getInstance().collection("users").document(user.uid)
+                .set(userData)
+                .addOnSuccessListener {
+                    Log.d("Firestore", "User data successfully written to Firestore.")
+                }
+                .addOnFailureListener { e ->
+                    Log.w("Firestore", "Error writing document", e)
+                }
+        } ?: Log.w("Firestore", "FirebaseAuth user is null, cannot update Firestore")
+    }
+
+
+
+
+    private fun updateUI(user: FirebaseUser?) {
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         val menu = navigationView.menu
         val signInMenuItem = menu.findItem(R.id.nav_google_sign_in)
 
-        if (account != null) {
-            val firstName = account.displayName?.split(" ")?.get(0) ?: "User"
-            signInMenuItem.title = "Hello, $firstName!"
+        if (user != null) {
+            val displayName = user.displayName
+            val firstName = displayName?.split(" ")?.get(0) ?: "User"
+            signInMenuItem.title = "Hello, $firstName"
+
         } else {
             signInMenuItem.title = "Sign in with Google"
         }
     }
+
 
     private fun logout() {
 

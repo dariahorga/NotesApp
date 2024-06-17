@@ -14,6 +14,11 @@
             android:title="Show Tasks" />
 
         <item
+            android:id="@+id/nav_received_notes"
+            android:icon="@drawable/ic_received_notes"
+            android:title="Received Notes"/>
+
+        <item
             android:id="@+id/nav_about"
             android:icon="@drawable/baseline_info_24"
             android:title="About Us"/>
