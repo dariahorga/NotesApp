@@ -105,6 +105,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     signIn()
                 }
             }
+
             R.id.nav_logout -> {
                 logout()
             }
