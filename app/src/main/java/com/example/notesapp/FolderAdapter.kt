@@ -1,7 +1,6 @@
 package com.example.notesapp
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.notesapp.R
 
 class FolderAdapter(private var folders: List<Folder>, private val context: Context) : RecyclerView.Adapter<FolderAdapter.FolderViewHolder>() {
 
@@ -25,10 +25,10 @@ class FolderAdapter(private var folders: List<Folder>, private val context: Cont
     }
 
     // ViewHolder pentru elementele din RecyclerView
-    class FolderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class FolderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val folderNameTextView: TextView = itemView.findViewById(R.id.folderNameTextView)
-        val updateButton: ImageView = itemView.findViewById(R.id.updateButton)
-        val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
+        //val updateButton: ImageView = itemView.findViewById(R.id.updateButton)
+        //val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
     }
 
     // Crearea unui ViewHolder pentru fiecare element din RecyclerView
@@ -38,7 +38,9 @@ class FolderAdapter(private var folders: List<Folder>, private val context: Cont
     }
 
     // Returnează numărul de elemente din lista de foldere
-    override fun getItemCount(): Int = folders.size
+    override fun getItemCount(): Int {
+        return folders.size
+    }
 
     // Legarea datelor din lista de foldere cu elementele din ViewHolder
     override fun onBindViewHolder(holder: FolderViewHolder, position: Int) {
@@ -46,21 +48,13 @@ class FolderAdapter(private var folders: List<Folder>, private val context: Cont
 
         holder.folderNameTextView.text = folder.name
 
-//        // Click listener pentru butonul de editare
-//        holder.updateButton.setOnClickListener {
-//            val intent = Intent(holder.itemView.context, UpdateFolderActivity::class.java).apply {
-//                putExtra("folder_id", folder.id)
-//            }
-//            holder.itemView.context.startActivity(intent)
-//        }
-
         // Click listener pentru butonul de ștergere
-        holder.deleteButton.setOnClickListener {
-            val db = NotesDatabaseHelper(holder.itemView.context)
-            db.deleteFolder(folder.id)
-            refreshData(db.getAllFolders())
-            Toast.makeText(holder.itemView.context, "Folder Deleted", Toast.LENGTH_SHORT).show()
-        }
+//        holder.deleteButton.setOnClickListener {
+//            val db = NotesDatabaseHelper(holder.itemView.context)
+//            db.deleteFolder(folder.id)
+//            refreshData(db.getAllFolders())
+//            Toast.makeText(holder.itemView.context, "Folder Deleted", Toast.LENGTH_SHORT).show()
+//        }
 
         // Click listener pentru elementul de tip folder
         holder.itemView.setOnClickListener {

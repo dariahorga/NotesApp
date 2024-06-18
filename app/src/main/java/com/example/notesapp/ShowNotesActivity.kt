@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notesapp.databinding.ActivityShowNotesBinding
 
-class NotesActivity : AppCompatActivity() {
+class ShowNotesActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityShowNotesBinding
     private lateinit var db: NotesDatabaseHelper
@@ -17,19 +17,18 @@ class NotesActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         db = NotesDatabaseHelper(this)
-        notesAdapter = NotesAdapter(emptyList(), emptyMap(), this)
-
-        binding.notesRecyclerView.apply {
-            layoutManager = LinearLayoutManager(this@NotesActivity)
-            adapter = notesAdapter
-        }
 
         val folderId = intent.getIntExtra("folder_id", -1)
-        if (folderId != -1) {
-            displayNotes(folderId)
-        } else {
-            finish() // Finish activity if folder_id is not provided
+        if (folderId == -1) {
+            finish()
+            return
         }
+
+        notesAdapter = NotesAdapter(emptyList(), emptyMap(), this)
+        binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.notesRecyclerView.adapter = notesAdapter
+
+        displayNotes(folderId)
     }
 
     private fun displayNotes(folderId: Int) {

@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var db: NotesDatabaseHelper
+    private lateinit var folderAdapter: FolderAdapter
     private lateinit var notesAdapter: NotesAdapter
     private lateinit var googleSignInClient: GoogleSignInClient
 
@@ -59,16 +60,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        val notes = db.getAllNotes()
-        val folders = db.getAllFolders().associateBy({ it.id }, { it.name })
-        notesAdapter = NotesAdapter(notes, folders, this)
-        binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
-        binding.notesRecyclerView.adapter = notesAdapter
+//        val notes = db.getAllNotes()
+//        val folders = db.getAllFolders().associateBy({ it.id }, { it.name })
+//        notesAdapter = NotesAdapter(notes, folders, this)
+//        binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
+//        binding.notesRecyclerView.adapter = notesAdapter
+//
+//        binding.addButton.setOnClickListener {
+//            val intent = Intent(this, AddNoteActivity::class.java)
+//            startActivity(intent)
+//        }
+
+        folderAdapter = FolderAdapter(db.getAllFolders(), this)
+        binding.folderRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.folderRecyclerView.adapter = folderAdapter
 
         binding.addButton.setOnClickListener {
             val intent = Intent(this, AddNoteActivity::class.java)
             startActivity(intent)
         }
+
 
         binding.showTasksButton.setOnClickListener{
             val intent = Intent(this, ShowTasksActivity::class.java)
@@ -82,10 +93,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
         checkSignInState()
-        val allNotes = db.getAllNotes()
-        val homeNotes = allNotes.filter { it.folderId == 1 } // Assume 1 is Home folder ID
-        notesAdapter.refreshData(homeNotes)
-        displayFoldersWithNotes()
+        folderAdapter.refreshData(db.getAllFolders())
+    //redirectToShowFolderActivity()
     }
 
     private fun checkSignInState() {
@@ -189,31 +198,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         ViewCompat.requestApplyInsets(binding.root)
     }
 
-    private fun displayFoldersWithNotes() {
-        val folders = db.getAllFolders()
-        binding.foldersLayout.removeAllViews()
-
-        for (folder in folders) {
-            val folderView = LayoutInflater.from(this).inflate(R.layout.folder_item, binding.foldersLayout, false)
-            val folderNameTextView = folderView.findViewById<TextView>(R.id.folderNameTextView)
-            val folderNotesRecyclerView = folderView.findViewById<RecyclerView>(R.id.folderNotesRecyclerView)
-
-            folderNameTextView.text = folder.name
-
-            val folderNotes = db.getNotesByFolderId(folder.id)
-            val folderNotesAdapter = NotesAdapter(folderNotes, folders.associateBy({ it.id }, { it.name }), this)
-
-            folderNotesRecyclerView.layoutManager = LinearLayoutManager(this)
-            folderNotesRecyclerView.adapter = folderNotesAdapter
-
-//            folderView.setOnClickListener {
-//                val intent = Intent(this, UpdateFolderActivity::class.java)
-//                intent.putExtra("folder_id", folder.id)
-//                startActivity(intent)
-//            }
-
-            binding.foldersLayout.addView(folderView)
-        }
+    private fun redirectToShowFolderActivity() {
+        val intent = Intent(this, ShowFolderActivity::class.java)
+        startActivity(intent)
     }
 
 

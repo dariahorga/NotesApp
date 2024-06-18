@@ -49,7 +49,7 @@ class ShowFolderActivity : AppCompatActivity() {
     }
 
     private fun openNotesActivity(folderId: Int) {
-        val intent = Intent(this, NotesActivity::class.java).apply {
+        val intent = Intent(this, ShowNotesActivity::class.java).apply {
             putExtra("folder_id", folderId)
         }
         startActivity(intent)
