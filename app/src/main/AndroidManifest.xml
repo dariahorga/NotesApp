@@ -38,6 +38,7 @@
         </activity>
         <activity android:name=".AddFolderActivity" />
         <activity android:name=".NotesInFolderActivity" />
+        <activity android:name=".UpdateFolderActivity"/>
 
         <meta-data
             android:name="preloaded_fonts"

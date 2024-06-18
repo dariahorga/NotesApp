@@ -1,70 +1,46 @@
-//package com.example.notesapp
-//
-//import android.os.Bundle
-//import android.widget.Toast
-//import androidx.appcompat.app.AppCompatActivity
-//import androidx.recyclerview.widget.LinearLayoutManager
-//import com.example.notesapp.databinding.ActivityUpdateFolderBinding
-//
-//class UpdateFolderActivity : AppCompatActivity(), NotesAdapter.OnItemClickListener {
-//
-//    private lateinit var binding: ActivityUpdateFolderBinding
-//    private lateinit var db: NotesDatabaseHelper
-//    private lateinit var folderName: String
-//    private lateinit var folder: Folder
-//    private lateinit var notesAdapter: NotesAdapter
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        binding = ActivityUpdateFolderBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        db = NotesDatabaseHelper(this)
-//
-//        folderName = intent.getStringExtra("folder_name") ?: ""
-//        if (folderName.isBlank()) {
-//            Toast.makeText(this, "Folder name not provided", Toast.LENGTH_SHORT).show()
-//            finish()
-//            return
-//        }
-//
-//        folder = db.getFolderIdByName(folderName) ?: run {
-//            Toast.makeText(this, "Folder not found", Toast.LENGTH_SHORT).show()
-//            finish()
-//            return
-//        }
-//
-//        binding.folderNameEditText.setText(folder.name)
-//
-//        setupRecyclerView()
-//
-//        binding.saveButton.setOnClickListener {
-//            val newName = binding.folderNameEditText.text.toString().trim()
-//
-//            if (newName.isNotEmpty()) {
-//                val updatedFolder = Folder(folder.id, newName)
-//                db.updateFolder(updatedFolder)
-//                Toast.makeText(this, "Folder updated", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(this, "Please enter a folder name", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//
-//        binding.deleteButton.setOnClickListener {
-//            db.deleteFolder(folder.id)
-//            Toast.makeText(this, "Folder deleted", Toast.LENGTH_SHORT).show()
-//            finish()
-//        }
-//    }
-//
-//    private fun setupRecyclerView() {
-//        val notes = db.getNotesByFolderId(folder.id)
-//        notesAdapter = NotesAdapter(notes, folder, this)
-//        binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
-//        binding.notesRecyclerView.adapter = notesAdapter
-//    }
-//
-//    override fun onItemClick(note: Note) {
-//        // Implementați acțiunile dorite când utilizatorul face clic pe o notă
-//    }
-//}
+package com.example.notesapp
+
+import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.notesapp.databinding.ActivityUpdateFolderBinding
+import com.example.notesapp.NotesDatabaseHelper
+
+class UpdateFolderActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityUpdateFolderBinding
+    private lateinit var db: NotesDatabaseHelper
+    private var folderId: Int = -1
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityUpdateFolderBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        db = NotesDatabaseHelper(this)
+
+        // Extrage datele primite din intent
+        folderId = intent.getIntExtra("folderId", -1)
+        val folderName = intent.getStringExtra("folderName")
+
+        // Populează câmpul de editare cu numele folderului curent
+        binding.folderNameEditText.setText(folderName)
+
+        binding.saveFolderButton.setOnClickListener {
+            val newFolderName = binding.folderNameEditText.text.toString().trim()
+
+            if (newFolderName.isNotBlank()) {
+                // Actualizează numele folderului în baza de date
+                db.updateFolderName(folderId, newFolderName)
+
+                // Actualizează numele folderului în toate notele asociate acestuia
+                db.updateNotesFolderName(folderId, newFolderName)
+
+                Toast.makeText(this, "Folder updated", Toast.LENGTH_SHORT).show()
+                finish()
+            } else {
+                Toast.makeText(this, "Folder name cannot be empty", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+}

@@ -20,10 +20,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
-import android.util.Log
-import android.view.LayoutInflater
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -60,18 +56,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-//        val notes = db.getAllNotes()
-//        val folders = db.getAllFolders().associateBy({ it.id }, { it.name })
-//        notesAdapter = NotesAdapter(notes, folders, this)
-//        binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
-//        binding.notesRecyclerView.adapter = notesAdapter
-//
-//        binding.addButton.setOnClickListener {
-//            val intent = Intent(this, AddNoteActivity::class.java)
-//            startActivity(intent)
-//        }
-
-        folderAdapter = FolderAdapter(db.getAllFolders(), this)
+        folderAdapter = FolderAdapter(db.getAllFolders(), this, this::updateFolder)
         binding.folderRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.folderRecyclerView.adapter = folderAdapter
 
@@ -89,6 +74,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setupEdgeToEdge()
         checkSignInState()
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -195,6 +181,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             insets
         }
         ViewCompat.requestApplyInsets(binding.root)
+    }
+
+    private fun updateFolder(folderName: String) {
+        // Obține folderId folosind numele folderului
+        val folderId = db.getFolderIdByName(folderName)
+
+        // Verifică dacă folderId este valid (nu este -1)
+        if (folderId != -1) {
+            // Creează un intent pentru UpdateFolderActivity
+            val intent = Intent(this, UpdateFolderActivity::class.java).apply {
+                putExtra("folderId", folderId)
+                putExtra("folderName", folderName)
+            }
+            // Lansează activitatea UpdateFolderActivity
+            startActivity(intent)
+        } else {
+            // Dacă folderId este -1, înseamnă că nu s-a găsit folderul în baza de date
+            Toast.makeText(this, "Folder not found", Toast.LENGTH_SHORT).show()
+        }
     }
 
 }

@@ -3,15 +3,12 @@ package com.example.notesapp
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notesapp.databinding.FolderItemBinding
+import kotlin.reflect.KFunction1
 
-class FolderAdapter(private var folders: List<Folder>, private val context: Context) :
+class FolderAdapter(private var folders: List<Folder>, private val context: Context, private val updateFolder: (String) -> Unit) :
     RecyclerView.Adapter<FolderAdapter.FolderViewHolder>() {
 
     // ViewHolder pentru elementele din RecyclerView
@@ -21,12 +18,17 @@ class FolderAdapter(private var folders: List<Folder>, private val context: Cont
         fun bind(folder: Folder) {
             binding.folderNameTextView.text = folder.name
 
+            // Setează listener pentru butonul de editare
+            binding.editFolderButton.setOnClickListener {
+                updateFolder(folder.name)
+            }
             itemView.setOnClickListener {
                 val intent = Intent(context, NotesInFolderActivity::class.java).apply {
                     putExtra("folderId", folder.id)
                     putExtra("folderName", folder.name)
                 }
                 context.startActivity(intent)
+                updateFolder(folder.name)
             }
         }
     }
@@ -46,6 +48,7 @@ class FolderAdapter(private var folders: List<Folder>, private val context: Cont
     override fun onBindViewHolder(holder: FolderViewHolder, position: Int) {
         val folder = folders[position]
         holder.bind(folder)
+
     }
 
     // Actualizarea datelor din adaptor și notificarea RecyclerView-ului
