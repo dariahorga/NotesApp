@@ -37,7 +37,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddFolderActivity" />
-        <activity android:name=".ShowFolderActivity"/>
+        <activity android:name=".NotesInFolderActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

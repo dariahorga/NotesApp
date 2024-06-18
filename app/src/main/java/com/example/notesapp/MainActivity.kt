@@ -94,7 +94,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onResume()
         checkSignInState()
         folderAdapter.refreshData(db.getAllFolders())
-    //redirectToShowFolderActivity()
     }
 
     private fun checkSignInState() {
@@ -197,11 +196,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         ViewCompat.requestApplyInsets(binding.root)
     }
-
-    private fun redirectToShowFolderActivity() {
-        val intent = Intent(this, ShowFolderActivity::class.java)
-        startActivity(intent)
-    }
-
 
 }
