@@ -20,13 +20,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
+import android.util.Log
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var db: NotesDatabaseHelper
-    private lateinit var folderAdapter: FolderAdapter
     private lateinit var notesAdapter: NotesAdapter
     private lateinit var googleSignInClient: GoogleSignInClient
 
@@ -50,21 +50,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("931473516011-ch9lglrohe8009f4fo5d4abeg1c0401f.apps.googleusercontent.com")
+            .requestIdToken("910542981394-is2203683tvg308k6q3k9sr8pvnolt8f.apps.googleusercontent.com")
             .requestEmail()
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        folderAdapter = FolderAdapter(db.getAllFolders(), this, this::updateFolder)
-        binding.folderRecyclerView.layoutManager = LinearLayoutManager(this)
-        binding.folderRecyclerView.adapter = folderAdapter
+        val notes = db.getAllNotes()
+        val folders = db.getAllFolders().associateBy({ it.id }, { it.name })
+        notesAdapter = NotesAdapter(notes, folders, this)
+        binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.notesRecyclerView.adapter = notesAdapter
 
         binding.addButton.setOnClickListener {
             val intent = Intent(this, AddNoteActivity::class.java)
             startActivity(intent)
         }
-
 
         binding.showTasksButton.setOnClickListener{
             val intent = Intent(this, ShowTasksActivity::class.java)
@@ -75,11 +76,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         checkSignInState()
     }
 
-
     override fun onResume() {
         super.onResume()
         checkSignInState()
-        folderAdapter.refreshData(db.getAllFolders())
+        notesAdapter.refreshData(db.getAllNotes())
     }
 
     private fun checkSignInState() {
@@ -182,24 +182,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         ViewCompat.requestApplyInsets(binding.root)
     }
-
-    private fun updateFolder(folderName: String) {
-        // Obține folderId folosind numele folderului
-        val folderId = db.getFolderIdByName(folderName)
-
-        // Verifică dacă folderId este valid (nu este -1)
-        if (folderId != -1) {
-            // Creează un intent pentru UpdateFolderActivity
-            val intent = Intent(this, UpdateFolderActivity::class.java).apply {
-                putExtra("folderId", folderId)
-                putExtra("folderName", folderName)
-            }
-            // Lansează activitatea UpdateFolderActivity
-            startActivity(intent)
-        } else {
-            // Dacă folderId este -1, înseamnă că nu s-a găsit folderul în baza de date
-            Toast.makeText(this, "Folder not found", Toast.LENGTH_SHORT).show()
-        }
-    }
-
 }

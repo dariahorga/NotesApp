@@ -11,85 +11,51 @@
     tools:openDrawer="start"
     tools:context=".MainActivity">
 
-    <!-- Main Content Layout -->
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="56dp"
+            android:id="@+id/toolbar"
+            android:elevation="2dp"
+            android:background="@color/purple"
+            android:layout_marginTop="32dp" />
 
-            <!-- Toolbar -->
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="@color/purple"
-                android:elevation="2dp"
-                android:layout_marginTop="32dp"
-                app:titleTextColor="@color/white"
-                app:title="Notes App" />
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            <!-- FloatingActionButton for showing tasks -->
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/showTasksButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_gravity="center_horizontal"
-                android:backgroundTint="@color/purple"
-                android:src="@drawable/baseline_task" />
-
-
-            <!-- RecyclerView for displaying folders -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/folderRecyclerView"
+                android:id="@+id/notesRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:clipToPadding="false"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/folder_item" />
+                android:layout_height="match_parent"
+                android:padding="30dp" />
+        </FrameLayout>
 
-            <!-- LinearLayout for displaying folders (if needed) -->
-            <LinearLayout
-                android:id="@+id/foldersLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="8dp">
+    </LinearLayout>
 
-                <!-- This layout will dynamically display folders -->
-
-            </LinearLayout>
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-
-    <!-- RelativeLayout for centering TextView -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center">
 
-        <!-- TextView for notes heading -->
         <TextView
             android:id="@+id/notesHeading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="More Fonts..."
             android:text="Notes."
             android:textColor="@color/purple"
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <!-- FloatingActionButton for adding a new note (at bottom right) -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addButton"
             android:layout_width="wrap_content"
@@ -105,7 +71,7 @@
             android:backgroundTint="@color/purple" />
     </RelativeLayout>
 
-    <!-- NavigationView for Drawer -->
+    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
