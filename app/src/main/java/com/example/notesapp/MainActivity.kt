@@ -21,6 +21,9 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -50,7 +53,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("910542981394-is2203683tvg308k6q3k9sr8pvnolt8f.apps.googleusercontent.com")
+            .requestIdToken("931473516011-ch9lglrohe8009f4fo5d4abeg1c0401f.apps.googleusercontent.com")
             .requestEmail()
             .build()
 
@@ -79,7 +82,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
         checkSignInState()
-        notesAdapter.refreshData(db.getAllNotes())
+        val allNotes = db.getAllNotes()
+        val homeNotes = allNotes.filter { it.folderId == 1 } // Assume 1 is Home folder ID
+        notesAdapter.refreshData(homeNotes)
+        displayFoldersWithNotes()
     }
 
     private fun checkSignInState() {
@@ -182,4 +188,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         ViewCompat.requestApplyInsets(binding.root)
     }
+
+    private fun displayFoldersWithNotes() {
+        val folders = db.getAllFolders()
+        binding.foldersLayout.removeAllViews()
+
+        for (folder in folders) {
+            val folderView = LayoutInflater.from(this).inflate(R.layout.folder_item, binding.foldersLayout, false)
+            val folderNameTextView = folderView.findViewById<TextView>(R.id.folderNameTextView)
+            val folderNotesRecyclerView = folderView.findViewById<RecyclerView>(R.id.folderNotesRecyclerView)
+
+            folderNameTextView.text = folder.name
+
+            val folderNotes = db.getNotesByFolderId(folder.id)
+            val folderNotesAdapter = NotesAdapter(folderNotes, folders.associateBy({ it.id }, { it.name }), this)
+
+            folderNotesRecyclerView.layoutManager = LinearLayoutManager(this)
+            folderNotesRecyclerView.adapter = folderNotesAdapter
+
+//            folderView.setOnClickListener {
+//                val intent = Intent(this, UpdateFolderActivity::class.java)
+//                intent.putExtra("folder_id", folder.id)
+//                startActivity(intent)
+//            }
+
+            binding.foldersLayout.addView(folderView)
+        }
+    }
+
+
 }

@@ -1,0 +1,32 @@
+<!-- res/layout/activity_update_folder.xml -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".UpdateFolderActivity">
+
+    <TextView
+        android:id="@+id/updateFolderHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:layout_marginLeft="26dp"
+        android:padding="2dp"
+        android:text="Update Folder"
+        android:textColor="@color/purple"
+        android:textSize="24sp" />
+
+    <EditText
+        android:id="@+id/folderNameEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/updateFolderHeading"
+        android:layout_marginTop="12dp"
+        android:hint="Folder Name"
+        android:inputType="text"
+        android:padding="20dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
+</RelativeLayout>

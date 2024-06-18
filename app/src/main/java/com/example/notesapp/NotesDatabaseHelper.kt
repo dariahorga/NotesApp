@@ -236,5 +236,63 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         db.close()
     }
 
+    fun updateFolder(folder: Folder) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_FOLDER_NAME, folder.name)
+        }
+        val whereClause = "$COLUMN_FOLDER_ID = ?"
+        val whereArgs = arrayOf(folder.id.toString())
+        db.update(TABLE_FOLDERS, values, whereClause, whereArgs)
+        db.close()
+    }
+
+    fun deleteFolder(folderId: Int) {
+        val db = writableDatabase
+        val whereClause = "$COLUMN_FOLDER_ID = ?"
+        val whereArgs = arrayOf(folderId.toString())
+
+        // Move notes to recycle bin before deleting the folder
+        val notesToRecycle = getNotesByFolderId(folderId)
+        for (note in notesToRecycle) {
+            moveToRecycleBin(note.id)
+        }
+
+        db.delete(TABLE_FOLDERS, whereClause, whereArgs)
+        db.close()
+    }
+
+    fun getNotesByFolderId(folderId: Int): List<Note> {
+        val notesList = mutableListOf<Note>()
+        val db = readableDatabase
+        val query = "SELECT * FROM $TABLE_NOTES WHERE $COLUMN_NOTE_FOLDER_ID = ?"
+        val cursor = db.rawQuery(query, arrayOf(folderId.toString()))
+
+        while (cursor.moveToNext()) {
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_NOTE_ID))
+            val title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOTE_TITLE))
+            val content = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOTE_CONTENT))
+            val folderId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_NOTE_FOLDER_ID))
+            val note = Note(id, title, content, folderId)
+            notesList.add(note)
+        }
+        cursor.close()
+        db.close()
+        return notesList
+    }
+
+    fun moveToRecycleBin(noteId: Int) {
+        // Update the folder ID of the note to a special "recycle bin" ID
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_NOTE_FOLDER_ID, -1) // Assume -1 is the recycle bin folder ID
+        }
+        val whereClause = "$COLUMN_NOTE_ID = ?"
+        val whereArgs = arrayOf(noteId.toString())
+        db.update(TABLE_NOTES, values, whereClause, whereArgs)
+        db.close()
+    }
+
+
 
 }
