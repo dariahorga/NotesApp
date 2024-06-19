@@ -10,7 +10,7 @@ The Notes App is a handy tool designed to help users manage their thoughts, idea
 - **Silaghi Mara**
 
 ## Demo: 
-Link: 
+Link: https://youtu.be/EPClT2TVAP4?si=OIIFEVA6tNFyMPeM
 
 ## User Stories
 1. As a user, I want to create a new note so that I can jot down my thoughts and ideas.
