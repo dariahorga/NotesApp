@@ -36,6 +36,7 @@ android {
     }
     buildFeatures{
         viewBinding = true
+        dataBinding = true
     }
     packagingOptions {
         exclude("META-INF/DEPENDENCIES")
@@ -70,4 +71,13 @@ dependencies {
     implementation("com.google.api-client:google-api-client-gson:1.32.1")
     implementation ("androidx.work:work-runtime-ktx:2.7.1")
 }
+
+    // ViewModel și LiveData pentru gestionarea datelor
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
+
+    // Testare și instrumentație pentru testare
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 

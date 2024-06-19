@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".UpdateFolderActivity">
+
+    <TextView
+        android:id="@+id/updateFolderHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="26dp"
+        android:text="Edit Folder Name"
+        android:textColor="@color/purple"
+        android:textSize="24sp"
+        android:padding="2dp"/>
+
+    <ImageView
+        android:id="@+id/saveFolderButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/baseline_done_24" />
+
+    <EditText
+        android:id="@+id/folderNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/purple_border"
+        android:hint="Add Content"
+        android:maxLines="2"
+        android:padding="20dp" />
+</RelativeLayout>

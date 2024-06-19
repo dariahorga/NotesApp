@@ -1,6 +1,6 @@
 package com.example.notesapp
 
-import android.content.Intent
+import android.app.Activity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -11,7 +11,8 @@ class AddNoteActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddNoteBinding
     private lateinit var db: NotesDatabaseHelper
-    private lateinit var folderAdapter: ArrayAdapter<String>
+    private var folderId: Int = -1
+    private var folderName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,18 +21,23 @@ class AddNoteActivity : AppCompatActivity() {
 
         db = NotesDatabaseHelper(this)
 
+        folderId = intent.getIntExtra("folderId", -1)
+        folderName = intent.getStringExtra("folderName")
+
+        supportActionBar?.title = "Add Note"
+
         setupFolderSpinner()
 
         binding.saveButton.setOnClickListener {
             val title = binding.titleEditText.text.toString()
             val content = binding.contentEditText.text.toString()
-            val selectedFolderName = binding.folderSpinner.selectedItem.toString()
-            val selectedFolderId = db.getFolderIdByName(selectedFolderName)
+
             if (title.isNotBlank()) {
-                val note = Note(0, title, content, selectedFolderId)
+                val note = Note(0, title, content, folderId)
                 db.insertNote(note)
-                finish()
+                setResult(Activity.RESULT_OK)
                 Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
+                finish()
             } else {
                 Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT).show()
             }
@@ -42,8 +48,17 @@ class AddNoteActivity : AppCompatActivity() {
         val folders = db.getAllFolders()
         val folderNames = folders.map { it.name }
 
-        folderAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, folderNames)
+        val folderAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, folderNames)
         folderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.folderSpinner.adapter = folderAdapter
+
+        // Selectează folderul curent în spinner (dacă există)
+        folderName?.let {
+            val position = folderNames.indexOf(it)
+            if (position != -1) {
+                binding.folderSpinner.setSelection(position)
+            }
+        }
     }
 }
+

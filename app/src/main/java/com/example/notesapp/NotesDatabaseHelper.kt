@@ -24,6 +24,8 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         private const val COLUMN_TASK_CONTENT = "task_content"
         private const val COLUMN_TASK_DEADLINE = "task_deadline"
         private const val COLUMN_TASK_CHECKED = "task_checked"
+
+        private const val COLUMN_NOTE_FOLDER_NAME = "folder_name"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -233,6 +235,58 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
             put(COLUMN_FOLDER_NAME, folder.name)
         }
         db.insert(TABLE_FOLDERS, null, values)
+        db.close()
+    }
+
+    fun getNotesByFolderId(folderId: Int): List<Note> {
+        val notesList = mutableListOf<Note>()
+        val db = readableDatabase
+        val query = "SELECT * FROM $TABLE_NOTES WHERE $COLUMN_NOTE_FOLDER_ID = ?"
+        val cursor = db.rawQuery(query, arrayOf(folderId.toString()))
+
+        while (cursor.moveToNext()) {
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_NOTE_ID))
+            val title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOTE_TITLE))
+            val content = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOTE_CONTENT))
+            val folderId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_NOTE_FOLDER_ID))
+            val note = Note(id, title, content, folderId)
+            notesList.add(note)
+        }
+        cursor.close()
+        db.close()
+        return notesList
+    }
+
+    fun updateFolderName(folderId: Int, newName: String) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_FOLDER_NAME, newName)
+        }
+        val whereClause = "$COLUMN_FOLDER_ID = ?"
+        val whereArgs = arrayOf(folderId.toString())
+        db.update(TABLE_FOLDERS, values, whereClause, whereArgs)
+        db.close()
+    }
+
+    fun updateNotesFolderName(folderId: Int, newFolderName: String) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_NOTE_FOLDER_NAME, newFolderName)
+        }
+        val whereClause = "$COLUMN_NOTE_FOLDER_ID = ?"
+        val whereArgs = arrayOf(folderId.toString())
+        db.update(TABLE_NOTES, values, whereClause, whereArgs)
+        db.close()
+    }
+
+    fun deleteFolderWithNotes(folderId: Int) {
+        // Delete notes in the folder
+        val db = writableDatabase
+        db.delete("notes", "folder_id = ?", arrayOf(folderId.toString()))
+
+        // Delete the folder itself
+        db.delete("folders", "id = ?", arrayOf(folderId.toString()))
+
         db.close()
     }
 

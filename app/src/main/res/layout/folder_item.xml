@@ -19,38 +19,20 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@color/white"
             android:layout_marginTop="8dp">
 
             <TextView
-                android:id="@+id/titleTextView"
+                android:id="@+id/folderNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
                 android:text="Title"
                 android:textColor="@color/purple"
                 android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/folderTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/titleTextView"
-                android:fontFamily="@font/poppins"
-                android:text="Folder"
-                android:textColor="@color/purple"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
+                android:textStyle="bold"/>
 
                 <ImageView
-                    android:id="@+id/updateButton"
+                    android:id="@+id/editFolderButton"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
@@ -59,26 +41,14 @@
                     android:visibility="visible" />
 
                 <ImageView
-                    android:id="@+id/deleteButton"
+                    android:id="@+id/deleteFolderButton"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="1dp"
                     android:src="@drawable/baseline_delete_24"
                     android:visibility="visible" />
-            </RelativeLayout>
 
         </RelativeLayout>
-
-        <TextView
-            android:id="@+id/contentTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Content"
-            android:fontFamily="@font/poppins"
-            android:maxLines="3"
-            android:layout_marginTop="4dp" />
-
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>
