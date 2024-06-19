@@ -35,7 +35,7 @@ Link:
 ![Class Diagram](https://github.com/dariahorga/NotesApp/raw/master/UMLd1.png)
 
 ### Use Case Diagram: 
-![Use Case Diagram](https://github.com/dariahorga/NotesApp/blob/master/UMLd2.png)
+![Use Case Diagram](https://github.com/dariahorga/NotesApp/blob/master/Decision%20tree%20(1).png)
 
 
 
