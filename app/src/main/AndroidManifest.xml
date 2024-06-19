@@ -25,11 +25,6 @@
         <activity
             android:name=".UpdateNoteActivity"
             android:exported="false" />
-
-        <activity android:name=".SendEmailActivity"
-            android:label="Send Email">
-        </activity>
-
         <activity
             android:name=".AddNoteActivity"
             android:exported="false" />

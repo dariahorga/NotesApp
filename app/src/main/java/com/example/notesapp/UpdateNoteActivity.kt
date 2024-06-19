@@ -1,5 +1,6 @@
 package com.example.notesapp
 
+import android.app.Activity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -43,7 +44,7 @@ class UpdateNoteActivity : AppCompatActivity() {
             if (note != null) {
                 val updatedNote = Note(note.id, newTitle, newContent, selectedFolderId)
                 db.updateNote(updatedNote)
-
+                setResult(Activity.RESULT_OK)
                 finish()
                 Toast.makeText(this, "Changes Saved", Toast.LENGTH_SHORT).show()
             } else {

@@ -1,5 +1,6 @@
 package com.example.notesapp
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +9,10 @@ import com.example.notesapp.databinding.ActivityNotesInFolderBinding
 
 class NotesInFolderActivity : AppCompatActivity() {
 
+    companion object {
+        private const val ADD_NOTE_REQUEST = 1
+        private const val UPDATE_NOTE_REQUEST = 2
+    }
     private lateinit var binding: ActivityNotesInFolderBinding
     private lateinit var notesAdapter: NotesAdapter
     private lateinit var db: NotesDatabaseHelper
@@ -21,32 +26,45 @@ class NotesInFolderActivity : AppCompatActivity() {
 
         db = NotesDatabaseHelper(this)
 
-        // Extrage folderId și folderName din Intent
         folderId = intent.getIntExtra("folderId", -1)
         folderName = intent.getStringExtra("folderName")
 
-        // Setează titlul activității cu numele folderului
         supportActionBar?.title = folderName
 
-        // Obține toate notele din folderul specificat
-        val notesInFolder = db.getAllNotes().filter { it.folderId == folderId }
+        val notesInFolder = db.getNotesByFolderId(folderId)
 
-        // Obține toate folderele pentru a afișa numele folderului în lista de note
         val folders = db.getAllFolders().associateBy({ it.id }, { it.name })
 
-        // Inițializează adapterul RecyclerView cu notele și folderele
-        notesAdapter = NotesAdapter(notesInFolder, folders, this)
+        notesAdapter = NotesAdapter(notesInFolder, folders, this){
+
+        }
 
         binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.notesRecyclerView.adapter = notesAdapter
 
-        // Setează un listener pentru butonul de adăugare notă
         binding.addButton.setOnClickListener {
             val intent = Intent(this, AddNoteActivity::class.java).apply {
                 putExtra("folderId", folderId)  // Trimite folderId ca Extra
                 putExtra("folderName", folderName) // Trimite folderName ca Extra (opțional)
             }
-            startActivity(intent)
+            startActivityForResult(intent, ADD_NOTE_REQUEST)
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == ADD_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
+            refreshNotesList()
+        }else if (requestCode == UPDATE_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
+            refreshNotesList()
+        }
+    }
+    private fun refreshNotesList() {
+        val notesInFolder = db.getNotesByFolderId(folderId)
+
+        notesAdapter.refreshData(notesInFolder)
+    }
 }
+
+

@@ -25,7 +25,7 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         private const val COLUMN_TASK_DEADLINE = "task_deadline"
         private const val COLUMN_TASK_CHECKED = "task_checked"
 
-        private val COLUMN_NOTE_FOLDER_NAME = "folder_name"
+        private const val COLUMN_NOTE_FOLDER_NAME = "folder_name"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -278,5 +278,17 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         db.update(TABLE_NOTES, values, whereClause, whereArgs)
         db.close()
     }
+
+    fun deleteFolderWithNotes(folderId: Int) {
+        // Delete notes in the folder
+        val db = writableDatabase
+        db.delete("notes", "folder_id = ?", arrayOf(folderId.toString()))
+
+        // Delete the folder itself
+        db.delete("folders", "id = ?", arrayOf(folderId.toString()))
+
+        db.close()
+    }
+
 
 }

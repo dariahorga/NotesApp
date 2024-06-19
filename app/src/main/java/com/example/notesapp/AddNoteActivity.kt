@@ -1,5 +1,6 @@
 package com.example.notesapp
 
+import android.app.Activity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -34,6 +35,7 @@ class AddNoteActivity : AppCompatActivity() {
             if (title.isNotBlank()) {
                 val note = Note(0, title, content, folderId)
                 db.insertNote(note)
+                setResult(Activity.RESULT_OK)
                 Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
                 finish()
             } else {

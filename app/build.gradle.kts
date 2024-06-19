@@ -36,6 +36,7 @@ android {
     }
     buildFeatures{
         viewBinding = true
+        dataBinding = true
     }
 }
 
@@ -47,7 +48,6 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -60,5 +60,13 @@ dependencies {
 
     // Also add the dependency for the Google Play services library and specify its version
     implementation("com.google.android.gms:play-services-auth:21.1.1")
-    implementation ("com.google.firebase:firebase-firestore:24.0.1") // Use the latest version
+
+    // ViewModel și LiveData pentru gestionarea datelor
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
+
+    // Testare și instrumentație pentru testare
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 }
