@@ -24,5 +24,6 @@ The Notes App is a handy tool designed to help users manage their thoughts, idea
 12. As a user, I want to connect my app to my personal phone calendar so that I can synchronize deadlines and reminders, ensuring that I stay on top of my schedule.
 
  ## Backlog
+ ![](https://github.com/dariahorga/NotesApp/blob/master/Screenshot%202024-06-19%20153151.png)
 
 
