@@ -45,6 +45,11 @@
                     android:layout_marginEnd="3dp"
                     android:src="@drawable/baseline_delete_24"
                     android:visibility="visible" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxTask"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </RelativeLayout>
 
         </RelativeLayout>
