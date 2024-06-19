@@ -17,7 +17,7 @@ The Notes App is a handy tool designed to help users manage their thoughts, idea
 5. As a user, I want to create tasks within my notes so that I can track what I need to do.
 6. As a user, I want to have a dashboard/view that shows my recent notes and tasks for quick access.
 7. As a user, I want to set deadlines for my tasks so that I can manage my time efficiently.
-8. As a user, I want to mark tasks as completed so that I can track my progress.**
+8. As a user, I want to mark tasks as completed so that I can track my progress.
 9. As a user, I want to view all my tasks and notes in one place so that I don’t miss any deadlines.
 10. As a user, I want to have my own account to manage my notes securely.
 
