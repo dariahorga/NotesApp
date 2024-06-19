@@ -1,7 +1,7 @@
 # Notes App
 
 ## Description
-The Notes App is a handy tool designed to help users manage their thoughts, ideas, and tasks. They can easily create, edit, and delete notes, organizing them into folders for a neat and tidy workspace. The app also allows to add tasks, to edit and delete them, and set deadlines to stay on track. Users can log in with their Google account and sync with their phone's calendar to keep everything in sync. The dashboard provides quick access to recent notes and tasks, making it easy for users to stay organized and productive in their daily lives.
+The Notes App is a handy tool designed to help users manage their thoughts, ideas, and tasks. They can easily create, edit, and delete notes, organizing them into folders for a neat and tidy workspace. The app also allows to add tasks, to edit and delete them, and set deadlines to stay on track. Users can log in with their Google account and connect with their phone's calendar to keep everything in sync. The homepage provides quick access to recent notes and tasks, making it easy for users to stay organized and productive in their daily lives.
 
 ## Team Members
 - **Berca Teodora**
