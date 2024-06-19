@@ -26,4 +26,7 @@ The Notes App is a handy tool designed to help users manage their thoughts, idea
  ## Backlog
  ![](https://github.com/dariahorga/NotesApp/blob/master/Screenshot%202024-06-19%20153151.png)
 
+  ## UML Diagrams
+  ![Class Diagram:]()
+
 
