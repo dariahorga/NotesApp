@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.WorkManager
 import com.example.notesapp.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -21,14 +22,32 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import android.util.Log
+import com.google.api.services.calendar.Calendar
+import com.google.api.services.calendar.model.Event
+import com.google.api.services.calendar.model.EventDateTime
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
+import com.google.api.client.json.gson.GsonFactory
+import com.google.api.client.util.DateTime
+import com.google.android.gms.common.api.Scope
+import com.google.api.services.calendar.CalendarScopes
+import java.util.*
+import com.google.gson.Gson
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.workDataOf
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var db: NotesDatabaseHelper
     private lateinit var notesAdapter: NotesAdapter
     private lateinit var googleSignInClient: GoogleSignInClient
+
+    companion object {
+        lateinit var calendarService: Calendar
+        var isCalendarServiceInitialized = false
+        private const val RC_SIGN_IN = 9001
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,10 +67,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
 
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("910542981394-is2203683tvg308k6q3k9sr8pvnolt8f.apps.googleusercontent.com")
             .requestEmail()
+            .requestScopes(Scope(CalendarScopes.CALENDAR))
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
@@ -84,7 +103,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun checkSignInState() {
         val account = GoogleSignIn.getLastSignedInAccount(this)
-        updateUI(account)
+        if (account != null) {
+            initializeCalendarService(account)
+            updateUI(account)
+        } else {
+            updateUI(null)
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -99,7 +123,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(intent)
             }
             R.id.nav_google_sign_in -> {
-
                 val account = GoogleSignIn.getLastSignedInAccount(this)
                 if (account == null) {
                     signIn()
@@ -113,18 +136,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
-    companion object {
-        private const val RC_SIGN_IN = 9001
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             handleSignInResult(task)
@@ -134,6 +152,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
+            account?.let {
+                initializeCalendarService(it)
+            }
             updateUI(account)
             Toast.makeText(this, "Logged in successfully!", Toast.LENGTH_SHORT).show()
         } catch (e: ApiException) {
@@ -142,11 +163,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    private fun initializeCalendarService(account: GoogleSignInAccount) {
+        val credential = GoogleAccountCredential.usingOAuth2(
+            this, listOf(CalendarScopes.CALENDAR)
+        )
+        credential.selectedAccount = account.account
+        calendarService = Calendar.Builder(
+            GoogleNetHttpTransport.newTrustedTransport(),
+            GsonFactory.getDefaultInstance(),
+            credential
+        )
+            .setApplicationName("NotesApp")
+            .build()
+        isCalendarServiceInitialized = true
+    }
+
     private fun updateUI(account: GoogleSignInAccount?) {
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         val menu = navigationView.menu
         val signInMenuItem = menu.findItem(R.id.nav_google_sign_in)
-
         if (account != null) {
             val firstName = account.displayName?.split(" ")?.get(0) ?: "User"
             signInMenuItem.title = "Hello, $firstName!"
@@ -156,15 +191,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-
         googleSignInClient.signOut().addOnCompleteListener(this) {
-
             updateUI(null)
+            isCalendarServiceInitialized = false
             Toast.makeText(this, "Logged out successfully!", Toast.LENGTH_SHORT).show()
         }
     }
-
-
 
     override fun onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
