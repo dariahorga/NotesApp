@@ -9,7 +9,10 @@ The Notes App is a handy tool designed to help users manage their thoughts, idea
 - **Horga Daria**
 - **Silaghi Mara**
 
-  ## User Stories
+## Demo: 
+Link: 
+
+## User Stories
 1. As a user, I want to create a new note so that I can jot down my thoughts and ideas.
 2. As a user, I want to edit my notes so that I can correct mistakes and update information.
 3. As a user, I want to delete notes I no longer need so that I can keep my workspace clean.
