@@ -13,6 +13,7 @@ class NotesInFolderActivity : AppCompatActivity() {
         private const val ADD_NOTE_REQUEST = 1
         private const val UPDATE_NOTE_REQUEST = 2
     }
+
     private lateinit var binding: ActivityNotesInFolderBinding
     private lateinit var notesAdapter: NotesAdapter
     private lateinit var db: NotesDatabaseHelper
@@ -24,28 +25,30 @@ class NotesInFolderActivity : AppCompatActivity() {
         binding = ActivityNotesInFolderBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // initializam baza de date
         db = NotesDatabaseHelper(this)
 
+        // preluam folderId si folderName din intent
         folderId = intent.getIntExtra("folderId", -1)
         folderName = intent.getStringExtra("folderName")
 
+        // setam titlul action bar-ului
         supportActionBar?.title = folderName
 
         val notesInFolder = db.getNotesByFolderId(folderId)
-
         val folders = db.getAllFolders().associateBy({ it.id }, { it.name })
 
-        notesAdapter = NotesAdapter(notesInFolder, folders, this){
-
-        }
+        // initializam adapterul pentru notite
+        notesAdapter = NotesAdapter(notesInFolder, folders, this) {}
 
         binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.notesRecyclerView.adapter = notesAdapter
 
+        // setam click listener pe butonul de adaugare notita
         binding.addButton.setOnClickListener {
             val intent = Intent(this, AddNoteActivity::class.java).apply {
-                putExtra("folderId", folderId)  // Trimite folderId ca Extra
-                putExtra("folderName", folderName) // Trimite folderName ca Extra (opțional)
+                putExtra("folderId", folderId)
+                putExtra("folderName", folderName)
             }
             startActivityForResult(intent, ADD_NOTE_REQUEST)
         }
@@ -56,15 +59,14 @@ class NotesInFolderActivity : AppCompatActivity() {
 
         if (requestCode == ADD_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
             refreshNotesList()
-        }else if (requestCode == UPDATE_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == UPDATE_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
             refreshNotesList()
         }
     }
+
     private fun refreshNotesList() {
         val notesInFolder = db.getNotesByFolderId(folderId)
-
+        // actualizam lista de notite in adapter
         notesAdapter.refreshData(notesInFolder)
     }
 }
-
-

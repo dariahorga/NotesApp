@@ -37,13 +37,13 @@ import com.google.gson.Gson
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.workDataOf
 
-
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var db: NotesDatabaseHelper
     private lateinit var folderAdapter: FolderAdapter
     private lateinit var googleSignInClient: GoogleSignInClient
+    private val ADD_NOTE_REQUEST = 1
 
     companion object {
         lateinit var calendarService: Calendar
@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // initializam baza de date
         db = NotesDatabaseHelper(this)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -69,33 +70,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
 
+        // configuram optiunile de Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("931473516011-ch9lglrohe8009f4fo5d4abeg1c0401f.apps.googleusercontent.com")
+            .requestIdToken("910542981394-is2203683tvg308k6q3k9sr8pvnolt8f.apps.googleusercontent.com")
             .requestEmail()
             .requestScopes(Scope(CalendarScopes.CALENDAR))
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
+        // initializam adapterul pentru foldere
         folderAdapter = FolderAdapter(db.getAllFolders(), this, this::updateFolder, this::deleteFolder)
         binding.folderRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.folderRecyclerView.adapter = folderAdapter
 
+        // setam click listener pe butonul de adaugare
         binding.addButton.setOnClickListener {
             val intent = Intent(this, AddNoteActivity::class.java)
-            startActivity(intent)
-        }
-
-
-        binding.showTasksButton.setOnClickListener{
-            val intent = Intent(this, ShowTasksActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, ADD_NOTE_REQUEST)
         }
 
         setupEdgeToEdge()
         checkSignInState()
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -115,7 +112,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_about -> Toast.makeText(this, "About Us", Toast.LENGTH_SHORT).show()
+            R.id.nav_about -> Toast.makeText(this, "Hello from Daria & Mara & Oana & Teodora!", Toast.LENGTH_SHORT).show()
             R.id.nav_create_folder -> {
                 val intent = Intent(this, AddFolderActivity::class.java)
                 startActivity(intent)
@@ -149,6 +146,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             handleSignInResult(task)
         }
+        if (requestCode == ADD_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
+            loadFolders() // Refresh the folders list
+        }
+    }
+    private fun loadFolders() {
+        val folders = db.getAllFolders()
+        folderAdapter = FolderAdapter(folders, this, ::updateFolder, ::deleteFolder)
+        binding.folderRecyclerView.adapter = folderAdapter
     }
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
@@ -166,6 +171,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun initializeCalendarService(account: GoogleSignInAccount) {
+        // configuram credentialele pentru Google Calendar API
         val credential = GoogleAccountCredential.usingOAuth2(
             this, listOf(CalendarScopes.CALENDAR)
         )
@@ -209,6 +215,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun setupEdgeToEdge() {
+        // configuram vizualizarea pentru a se intinde pana la marginile ecranului
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             binding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -218,25 +225,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun updateFolder(folderName: String) {
-        // Obține folderId folosind numele folderului
+        // obtinem folderId folosind numele folderului
         val folderId = db.getFolderIdByName(folderName)
 
-        // Verifică dacă folderId este valid (nu este -1)
+        // verificam daca folderId este valid (nu este -1)
         if (folderId != -1) {
-            // Creează un intent pentru UpdateFolderActivity
+            // cream un intent pentru UpdateFolderActivity
             val intent = Intent(this, UpdateFolderActivity::class.java).apply {
                 putExtra("folderId", folderId)
                 putExtra("folderName", folderName)
             }
-            // Lansează activitatea UpdateFolderActivity
+            // lansam activitatea UpdateFolderActivity
             startActivity(intent)
         } else {
-            // Dacă folderId este -1, înseamnă că nu s-a găsit folderul în baza de date
+            // daca folderId este -1, inseamna ca nu s-a gasit folderul in baza de date
             Toast.makeText(this, "Folder not found", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // Funcția pentru ștergerea unui folder și a notițelor asociate
+    // functia pentru stergerea unui folder si a notitelor asociate
     fun deleteFolder(folderId: Int) {
         db.deleteFolderWithNotes(folderId)
         refreshFoldersList()
@@ -244,11 +251,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun refreshFoldersList() {
-        // Obține din nou lista de foldere din baza de date sau din ViewModel
+        // obtinem din nou lista de foldere din baza de date sau din ViewModel
         val folders = db.getAllFolders()
 
-        // Actualizează adapterul RecyclerView cu lista actualizată de foldere
-        folderAdapter.refreshData(folders);
+        // actualizam adapterul RecyclerView cu lista actualizata de foldere
+        folderAdapter.refreshData(folders)
     }
 
 }

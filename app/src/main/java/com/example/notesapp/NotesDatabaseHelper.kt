@@ -29,15 +29,19 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
     }
 
     override fun onCreate(db: SQLiteDatabase) {
+        // cream tabelul pentru notite
         val createNotesTableQuery = "CREATE TABLE $TABLE_NOTES ($COLUMN_NOTE_ID INTEGER PRIMARY KEY, $COLUMN_NOTE_TITLE TEXT, $COLUMN_NOTE_CONTENT TEXT, $COLUMN_NOTE_FOLDER_ID INTEGER)"
         db.execSQL(createNotesTableQuery)
 
+        // cream tabelul pentru foldere
         val createFoldersTableQuery = "CREATE TABLE $TABLE_FOLDERS ($COLUMN_FOLDER_ID INTEGER PRIMARY KEY, $COLUMN_FOLDER_NAME TEXT)"
         db.execSQL(createFoldersTableQuery)
 
+        // cream tabelul pentru taskuri
         val createTasksTableQuery = "CREATE TABLE $TABLE_TASKS ($COLUMN_TASK_ID INTEGER PRIMARY KEY, $COLUMN_TASK_CONTENT TEXT, $COLUMN_TASK_DEADLINE TEXT, $COLUMN_TASK_CHECKED INTEGER)"
         db.execSQL(createTasksTableQuery)
 
+        // inseram un folder implicit
         val defaultFolderValues = ContentValues().apply {
             put(COLUMN_FOLDER_NAME, "Home")
         }
@@ -45,15 +49,17 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        // stergem tabelele existente si le cream din nou
         db.execSQL("DROP TABLE IF EXISTS $TABLE_NOTES")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_FOLDERS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_TASKS")
         onCreate(db)
     }
-    fun insertTask (task: Task)
-    {
+
+    fun insertTask(task: Task) {
         val db = writableDatabase
-        val values = ContentValues().apply{
+        // inseram taskul in tabelul de taskuri
+        val values = ContentValues().apply {
             put(COLUMN_TASK_CONTENT, task.content)
             put(COLUMN_TASK_DEADLINE, task.dataExpirare)
             put(COLUMN_TASK_CHECKED, 0)
@@ -61,10 +67,11 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         db.insert(TABLE_TASKS, null, values)
         db.close()
     }
-    fun updateTask(task: Task)
-    {
+
+    fun updateTask(task: Task) {
         val db = writableDatabase
-        val values = ContentValues().apply{
+        // actualizam taskul in tabelul de taskuri
+        val values = ContentValues().apply {
             put(COLUMN_TASK_CONTENT, task.content)
             put(COLUMN_TASK_DEADLINE, task.dataExpirare)
             put(COLUMN_TASK_CHECKED, task.checked)
@@ -75,10 +82,10 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         db.close()
     }
 
-    fun getAllTasks() : List<Task>
-    {
+    fun getAllTasks(): List<Task> {
         val tasksList = mutableListOf<Task>()
         val db = readableDatabase
+        // selectam toate taskurile din tabel
         val query = "SELECT * FROM $TABLE_TASKS"
         val cursor = db.rawQuery(query, null)
         while (cursor.moveToNext()) {
@@ -93,8 +100,10 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         db.close()
         return tasksList
     }
+
     fun insertNote(note: Note) {
         val db = writableDatabase
+        // inseram notita in tabelul de notite
         val values = ContentValues().apply {
             put(COLUMN_NOTE_TITLE, note.title)
             put(COLUMN_NOTE_CONTENT, note.content)
@@ -106,6 +115,7 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
 
     fun updateNote(note: Note) {
         val db = writableDatabase
+        // actualizam notita in tabelul de notite
         val values = ContentValues().apply {
             put(COLUMN_NOTE_TITLE, note.title)
             put(COLUMN_NOTE_CONTENT, note.content)
@@ -119,6 +129,7 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
 
     fun deleteNote(noteId: Int) {
         val db = writableDatabase
+        // stergem notita din tabelul de notite
         val whereClause = "$COLUMN_NOTE_ID = ?"
         val whereArgs = arrayOf(noteId.toString())
         db.delete(TABLE_NOTES, whereClause, whereArgs)
@@ -127,6 +138,7 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
 
     fun deleteTask(taskId: Int) {
         val db = writableDatabase
+        // stergem taskul din tabelul de taskuri
         val whereClause = "$COLUMN_TASK_ID = ?"
         val whereArgs = arrayOf(taskId.toString())
         db.delete(TABLE_TASKS, whereClause, whereArgs)
@@ -136,9 +148,9 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
     fun getAllNotes(): List<Note> {
         val notesList = mutableListOf<Note>()
         val db = readableDatabase
+        // selectam toate notitele din tabel
         val query = "SELECT * FROM $TABLE_NOTES"
         val cursor = db.rawQuery(query, null)
-
         while (cursor.moveToNext()) {
             val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_NOTE_ID))
             val title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOTE_TITLE))
@@ -154,10 +166,10 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
 
     fun getNoteById(noteId: Int): Note? {
         val db = readableDatabase
+        // selectam notita dupa id
         val selection = "$COLUMN_NOTE_ID = ?"
         val selectionArgs = arrayOf(noteId.toString())
         val cursor = db.query(TABLE_NOTES, null, selection, selectionArgs, null, null, null)
-
         val note: Note?
         if (cursor.moveToFirst()) {
             val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_NOTE_ID))
@@ -168,7 +180,6 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         } else {
             note = null
         }
-
         cursor.close()
         db.close()
         return note
@@ -176,10 +187,10 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
 
     fun getTaskById(taskId: Int): Task? {
         val db = readableDatabase
+        // selectam taskul dupa id
         val selection = "$COLUMN_TASK_ID = ?"
         val selectionArgs = arrayOf(taskId.toString())
         val cursor = db.query(TABLE_TASKS, null, selection, selectionArgs, null, null, null)
-
         val task: Task?
         if (cursor.moveToFirst()) {
             val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_TASK_ID))
@@ -194,12 +205,13 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         db.close()
         return task
     }
+
     fun getAllFolders(): List<Folder> {
         val foldersList = mutableListOf<Folder>()
         val db = readableDatabase
+        // selectam toate folderele din tabel
         val query = "SELECT * FROM $TABLE_FOLDERS"
         val cursor = db.rawQuery(query, null)
-
         while (cursor.moveToNext()) {
             val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FOLDER_ID))
             val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FOLDER_NAME))
@@ -213,17 +225,16 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
 
     fun getFolderIdByName(folderName: String): Int {
         val db = readableDatabase
+        // obtinem id-ul folderului dupa nume
         val selection = "$COLUMN_FOLDER_NAME = ?"
         val selectionArgs = arrayOf(folderName)
         val cursor = db.query(TABLE_FOLDERS, null, selection, selectionArgs, null, null, null)
-
         val folderId: Int
         if (cursor.moveToFirst()) {
             folderId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FOLDER_ID))
         } else {
             folderId = -1
         }
-
         cursor.close()
         db.close()
         return folderId
@@ -231,6 +242,7 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
 
     fun insertFolder(folder: Folder) {
         val db = writableDatabase
+        // inseram folderul in tabelul de foldere
         val values = ContentValues().apply {
             put(COLUMN_FOLDER_NAME, folder.name)
         }
@@ -241,9 +253,9 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
     fun getNotesByFolderId(folderId: Int): List<Note> {
         val notesList = mutableListOf<Note>()
         val db = readableDatabase
+        // selectam notele dupa id-ul folderului
         val query = "SELECT * FROM $TABLE_NOTES WHERE $COLUMN_NOTE_FOLDER_ID = ?"
         val cursor = db.rawQuery(query, arrayOf(folderId.toString()))
-
         while (cursor.moveToNext()) {
             val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_NOTE_ID))
             val title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOTE_TITLE))
@@ -259,6 +271,7 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
 
     fun updateFolderName(folderId: Int, newName: String) {
         val db = writableDatabase
+        // actualizam numele folderului in tabelul de foldere
         val values = ContentValues().apply {
             put(COLUMN_FOLDER_NAME, newName)
         }
@@ -270,6 +283,7 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
 
     fun updateNotesFolderName(folderId: Int, newFolderName: String) {
         val db = writableDatabase
+        // actualizam numele folderului in tabelul de notite
         val values = ContentValues().apply {
             put(COLUMN_NOTE_FOLDER_NAME, newFolderName)
         }
@@ -280,15 +294,10 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
     }
 
     fun deleteFolderWithNotes(folderId: Int) {
-        // Delete notes in the folder
         val db = writableDatabase
+        // stergem notitele si folderul din tabelele respective
         db.delete("notes", "folder_id = ?", arrayOf(folderId.toString()))
-
-        // Delete the folder itself
         db.delete("folders", "id = ?", arrayOf(folderId.toString()))
-
         db.close()
     }
-
-
 }

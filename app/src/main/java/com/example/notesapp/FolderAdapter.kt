@@ -18,16 +18,20 @@ class FolderAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(folder: Folder) {
+            // setam numele folderului in text view
             binding.folderNameTextView.text = folder.name
 
+            // setam click listener pe butonul de editare folder
             binding.editFolderButton.setOnClickListener {
                 updateFolder(folder.name)
             }
 
+            // setam click listener pe butonul de stergere folder
             binding.deleteFolderButton.setOnClickListener {
                 deleteFolderCallback(folder.id)
             }
 
+            // setam click listener pe item view pentru a deschide activitatea NotesInFolder
             itemView.setOnClickListener {
                 val intent = Intent(context, NotesInFolderActivity::class.java).apply {
                     putExtra("folderId", folder.id)
@@ -53,10 +57,10 @@ class FolderAdapter(
         holder.bind(folder)
     }
 
+    // metoda pentru actualizarea datelor in adapter
     fun refreshData(newFolders: List<Folder>) {
         folders = newFolders
         notifyDataSetChanged()
     }
 
 }
-

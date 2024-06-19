@@ -28,8 +28,10 @@ class UpdateTaskActivity : AppCompatActivity() {
         binding = ActivityUpdateTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // initializam baza de date
         db = NotesDatabaseHelper(this)
 
+        // preluam taskId din intent
         taskId = intent.getIntExtra("task_id", -1)
         if (taskId == -1) {
             finish()
@@ -40,10 +42,12 @@ class UpdateTaskActivity : AppCompatActivity() {
 
         var date: String = ""
 
+        // setam listener pe calendar view pentru a prelua data selectata
         binding.calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             date = (dayOfMonth.toString() + "-" + (month + 1) + "-" + year)
         }
 
+        // setam continutul task-ului in campul de text
         binding.contentEditText.setText(task?.content ?: "")
 
         val zi: Int
@@ -63,6 +67,7 @@ class UpdateTaskActivity : AppCompatActivity() {
             binding.calendarView.setDate(timeInMillis)
         }
 
+        // setam click listener pe butonul de salvare
         binding.saveButton.setOnClickListener {
             val newContent = binding.contentEditText.text.toString()
             if (newContent.isEmpty()) {
@@ -70,10 +75,10 @@ class UpdateTaskActivity : AppCompatActivity() {
             } else {
                 val updatedTask: Task
                 if (task != null) {
-                    if (date.isBlank()) {
-                        updatedTask = Task(task.id, newContent, task.dataExpirare, task.checked, task.eventId)
+                    updatedTask = if (date.isBlank()) {
+                        Task(task.id, newContent, task.dataExpirare, task.checked, task.eventId)
                     } else {
-                        updatedTask = Task(task.id, newContent, date, task.checked, task.eventId)
+                        Task(task.id, newContent, date, task.checked, task.eventId)
                     }
                     db.updateTask(updatedTask)
                     if (MainActivity.isCalendarServiceInitialized) {
@@ -106,6 +111,7 @@ class UpdateTaskActivity : AppCompatActivity() {
                 val date = inputFormat.parse(task.dataExpirare)
                 val dateTimeString = outputFormat.format(date)
 
+                // preluam evenimentul din calendar
                 val event = calendarService.events().get("primary", task.eventId).execute()
 
                 event.summary = task.content
@@ -119,6 +125,7 @@ class UpdateTaskActivity : AppCompatActivity() {
                 val end = EventDateTime().setDateTime(dateTimeEnd).setTimeZone("America/Los_Angeles")
                 event.end = end
 
+                // actualizam evenimentul in calendar
                 calendarService.events().update("primary", event.id, event).execute()
 
                 Result.success()

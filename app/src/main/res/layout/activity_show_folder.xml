@@ -1,9 +1,7 @@
-<!-- res/layout/activity_folder.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- RecyclerView pentru afișarea listei de foldere -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/foldersRecyclerView"
         android:layout_width="match_parent"
@@ -11,7 +9,6 @@
         android:padding="8dp"
         android:nestedScrollingEnabled="false" />
 
-    <!-- FloatingActionButton pentru adăugarea unui nou folder -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButton"
         android:layout_width="wrap_content"

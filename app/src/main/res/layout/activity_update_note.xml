@@ -41,7 +41,6 @@
         android:maxLines="2"
         />
 
-    <!-- Add folder selection Spinner -->
     <Spinner
         android:id="@+id/folderSpinner"
         android:layout_width="match_parent"

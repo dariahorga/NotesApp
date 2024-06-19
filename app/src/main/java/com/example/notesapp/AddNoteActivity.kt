@@ -19,26 +19,36 @@ class AddNoteActivity : AppCompatActivity() {
         binding = ActivityAddNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // initializam baza de date
         db = NotesDatabaseHelper(this)
 
+        // preluam folderId si folderName din intent
         folderId = intent.getIntExtra("folderId", -1)
         folderName = intent.getStringExtra("folderName")
 
+        // setam titlul action bar-ului
         supportActionBar?.title = "Add Note"
 
+        // configuram spinner-ul pentru foldere
         setupFolderSpinner()
 
+        // setam click listener pe butonul de salvare
         binding.saveButton.setOnClickListener {
             val title = binding.titleEditText.text.toString()
             val content = binding.contentEditText.text.toString()
+            val selectedFolderName = binding.folderSpinner.selectedItem as String
+            val selectedFolderId = db.getFolderIdByName(selectedFolderName)
 
             if (title.isNotBlank()) {
-                val note = Note(0, title, content, folderId)
+                // cream o notita noua
+                val note = Note(0, title, content, selectedFolderId)
+                // inseram notita in baza de date
                 db.insertNote(note)
                 setResult(Activity.RESULT_OK)
                 Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
                 finish()
             } else {
+                // afisam mesaj daca titlul este gol
                 Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT).show()
             }
         }
@@ -52,7 +62,7 @@ class AddNoteActivity : AppCompatActivity() {
         folderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.folderSpinner.adapter = folderAdapter
 
-        // Selectează folderul curent în spinner (dacă există)
+        // selectam folderul curent in spinner (daca exista)
         folderName?.let {
             val position = folderNames.indexOf(it)
             if (position != -1) {
@@ -61,4 +71,3 @@ class AddNoteActivity : AppCompatActivity() {
         }
     }
 }
-

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".NotesInFolderActivity">
 
-    <!-- Toolbar -->
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -19,7 +19,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
-    <!-- RecyclerView for displaying notes -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notesRecyclerView"
         android:layout_width="0dp"
@@ -31,7 +30,6 @@
         android:padding="8dp"
         tools:listitem="@layout/note_item" />
 
-    <!-- FloatingActionButton for adding a new note (at bottom right) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButton"
         android:layout_width="wrap_content"

@@ -18,23 +18,25 @@ class UpdateFolderActivity : AppCompatActivity() {
         binding = ActivityUpdateFolderBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // initializam baza de date
         db = NotesDatabaseHelper(this)
 
-        // Extrage datele primite din intent
+        // preluam folderId si folderName din intent
         folderId = intent.getIntExtra("folderId", -1)
         val folderName = intent.getStringExtra("folderName")
 
-        // Populează câmpul de editare cu numele folderului curent
+        // setam numele folderului in EditText
         binding.folderNameEditText.setText(folderName)
 
+        // setam click listener pe butonul de salvare
         binding.saveFolderButton.setOnClickListener {
             val newFolderName = binding.folderNameEditText.text.toString().trim()
 
             if (newFolderName.isNotBlank()) {
-                // Actualizează numele folderului în baza de date
+                // actualizam numele folderului in baza de date
                 db.updateFolderName(folderId, newFolderName)
 
-                // Actualizează numele folderului în toate notele asociate acestuia
+                // actualizam numele folderului in notele asociate
                 db.updateNotesFolderName(folderId, newFolderName)
 
                 Toast.makeText(this, "Folder updated", Toast.LENGTH_SHORT).show()
@@ -44,5 +46,4 @@ class UpdateFolderActivity : AppCompatActivity() {
             }
         }
     }
-
 }

@@ -30,22 +30,28 @@ class AddTaskActivity : AppCompatActivity() {
         binding = ActivityAddTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // initializam baza de date
         db = NotesDatabaseHelper(this)
 
         var date: String = ""
 
+        // setam listener pe calendar view pentru a prelua data selectata
         binding.calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             date = (dayOfMonth.toString() + "-" + (month + 1) + "-" + year)
         }
 
+        // setam click listener pe butonul de salvare
         binding.saveButton.setOnClickListener {
             val content = binding.contentEditText.text.toString()
             if (content.isEmpty()) {
+                // afisam mesaj daca continutul este gol
                 Toast.makeText(this, "Content cannot be empty", Toast.LENGTH_SHORT).show()
             } else {
                 if (date.isEmpty()) {
+                    // afisam mesaj daca data nu este selectata
                     Toast.makeText(this, "Select a deadline", Toast.LENGTH_SHORT).show()
                 } else {
+                    // cream un obiect task nou
                     val task = Task(0, content, date, 0, null)  // Initialize eventId as null
                     db.insertTask(task)
                     if (MainActivity.isCalendarServiceInitialized) {
@@ -56,6 +62,7 @@ class AddTaskActivity : AppCompatActivity() {
                         WorkManager.getInstance(this).enqueue(workRequest)
                         Toast.makeText(this, "Task added to Google Calendar", Toast.LENGTH_SHORT).show()
                     } else {
+                        // afisam mesaj daca serviciul de calendar nu este initializat
                         Toast.makeText(this, "Calendar service not initialized", Toast.LENGTH_SHORT).show()
                     }
                     finish()
@@ -76,6 +83,7 @@ class AddTaskActivity : AppCompatActivity() {
                 val date = inputFormat.parse(task.dataExpirare)
                 val dateTimeString = outputFormat.format(date)
 
+                // cream un eveniment pentru calendar
                 val event = Event()
                     .setSummary(task.content)
                     .setDescription("Task from NotesApp")
@@ -91,7 +99,7 @@ class AddTaskActivity : AppCompatActivity() {
                 val calendarId = "primary"
                 val createdEvent = calendarService.events().insert(calendarId, event).execute()
 
-                // Update the task with the eventId and save it to the database
+                // actualizam task-ul cu eventId si salvam in baza de date
                 val db = NotesDatabaseHelper(context)
                 task.eventId = createdEvent.id
                 db.updateTask(task)
