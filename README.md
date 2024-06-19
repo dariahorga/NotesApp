@@ -19,7 +19,7 @@ Link:
 4. As a user, I want to create folders to organize my content hierarchically.
 5. As a user, I want to delete folders to remove unwanted categories and keep my workspace organized.
 6. As a user, I want to create tasks within my notes so that I can track what I need to do.
-7. As a user, I want to have a dashboard/view that shows my recent notes and tasks for quick access.
+7. As a user, I want to have a homepage that shows all notes and tasks for quick access.
 8. As a user, I want to set deadlines for my tasks so that I can manage my time efficiently.
 9. As a user, I want to mark tasks as completed so that I can track my progress.
 10. As a user, I want to view all my tasks in one place, regardless of which note they are in, so that I don’t miss any deadlines.
