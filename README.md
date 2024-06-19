@@ -22,7 +22,7 @@ Link:
 7. As a user, I want to have a homepage that shows all notes and tasks for quick access.
 8. As a user, I want to set deadlines for my tasks so that I can manage my time efficiently.
 9. As a user, I want to mark tasks as completed so that I can track my progress.
-10. As a user, I want to view all my tasks in one place, regardless of which note they are in, so that I don’t miss any deadlines.
+10. As a user, I want to view all my tasks in one place so that I don’t miss any deadlines.
 11. As a user, I want to have my own account to manage my notes securely.
 12. As a user, I want to connect my app to my personal phone calendar so that I can synchronize deadlines and reminders, ensuring that I stay on top of my schedule.
 
