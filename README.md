@@ -29,6 +29,7 @@ The Notes App is a handy tool designed to help users manage their thoughts, idea
   ## UML Diagrams
   Class Diagram: 
   ![Class Diagram:](https://github.com/dariahorga/NotesApp/blob/master/UMLd1.png)
+  
   Use Case Diagram: 
   ![Use Case Diagram: ](https://github.com/dariahorga/NotesApp/blob/master/UMLd2.png)
 
