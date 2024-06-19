@@ -8,6 +8,11 @@
             android:icon="@drawable/baseline_create_new_folder_24"
             android:title="Create Folder" />
         <item
+            android:id="@+id/nav_show_tasks"
+            android:icon="@drawable/baseline_task"
+            android:title="Show Tasks" />
+
+        <item
             android:id="@+id/nav_about"
             android:icon="@drawable/baseline_info_24"
             android:title="About Us"/>

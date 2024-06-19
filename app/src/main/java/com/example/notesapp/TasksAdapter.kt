@@ -47,6 +47,7 @@ class TasksAdapter (var tasks: List<Task>, private val context: Context) : Recyc
             refreshData(db.getAllTasks())
         }
 
+
         holder.updateButton.setOnClickListener {
             val intent = Intent(holder.itemView.context, UpdateTaskActivity::class.java).apply {
                 putExtra("task_id", task.id)
